@@ -12,7 +12,7 @@ Unity 2022.3 LTS 俯视 2D 游戏项目模板。
 
 1. 打开 Unity Hub，点击 **Add** → 选择本文件夹
 2. 等待 Unity 首次导入（会自动生成 `Library/`，属正常现象）
-3. 打开场景 `Assets/Scenes/Main.unity`
+3. 打开场景 `Assets/Main.unity`（与 `001.unity` 同级，在 Assets 根目录）
 4. 点击 **Play** 运行
 
 ## 操作说明
