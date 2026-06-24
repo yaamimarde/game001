@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 2.5D 透视相机：跟随目标，X 轴倾斜俯视，Z 轴轨道旋转（Q/E）。
+/// 2.5D 透视相机：跟随目标，X 轴倾斜俯视，Z 轴轨道旋转（Q/E 按一次转 45°）。
 /// 位置与旋转在 LateUpdate 更新，确保在玩家移动之后执行。
 /// </summary>
 public class CameraFollow2D : MonoBehaviour
@@ -14,19 +14,51 @@ public class CameraFollow2D : MonoBehaviour
     [Tooltip("焦点相对目标位置的偏移")]
     [SerializeField] Vector3 lookAtOffset = Vector3.zero;
     [SerializeField] float smoothTime = 0.15f;
-    [Tooltip("Q/E 绕 Z 轴旋转的速度（度/秒）")]
-    [SerializeField] float rotateSpeed = 90f;
+    [Tooltip("Q/E 每次按下的旋转角度（度）")]
+    [SerializeField] float stepAngle = 45f;
+    [Tooltip("单次步进旋转的动画时长（秒）")]
+    [SerializeField] float stepRotateDuration = 0.25f;
 
-    // 当前 Z 轴轨道角（度），Q 减小、E 增大
     float orbitAngle;
+    float targetOrbitAngle;
+    float rotateStartAngle;
+    float rotateElapsed;
+    bool isRotating;
     Vector3 velocity;
+
+    /// <summary>相机是否正在步进旋转（此时玩家应禁止移动）。</summary>
+    public bool IsRotating => isRotating;
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Q))
-            orbitAngle -= rotateSpeed * Time.deltaTime;
-        if (Input.GetKey(KeyCode.E))
-            orbitAngle += rotateSpeed * Time.deltaTime;
+        if (!isRotating)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+                BeginStepRotation(-stepAngle);
+            else if (Input.GetKeyDown(KeyCode.E))
+                BeginStepRotation(stepAngle);
+        }
+
+        if (!isRotating)
+            return;
+
+        rotateElapsed += Time.deltaTime;
+        float t = Mathf.Clamp01(rotateElapsed / stepRotateDuration);
+        orbitAngle = Mathf.Lerp(rotateStartAngle, targetOrbitAngle, Mathf.SmoothStep(0f, 1f, t));
+
+        if (t >= 1f)
+        {
+            orbitAngle = targetOrbitAngle;
+            isRotating = false;
+        }
+    }
+
+    void BeginStepRotation(float deltaAngle)
+    {
+        rotateStartAngle = orbitAngle;
+        targetOrbitAngle = orbitAngle + deltaAngle;
+        rotateElapsed = 0f;
+        isRotating = true;
     }
 
     void LateUpdate()
@@ -34,12 +66,10 @@ public class CameraFollow2D : MonoBehaviour
         if (target == null)
             return;
 
-        // 先绕 Z 轴轨道旋转，再绕 X 轴倾斜，得到 2.5D 观察姿态
         Quaternion zOrbit = Quaternion.AngleAxis(orbitAngle, Vector3.forward);
         Quaternion xTilt = Quaternion.Euler(tiltAngle, 0f, 0f);
 
         Vector3 focusPoint = target.position + lookAtOffset;
-        // 从焦点沿倾斜后的后方偏移 followDistance，再应用轨道旋转
         Vector3 offset = zOrbit * (xTilt * Vector3.back * followDistance);
         Vector3 desiredPosition = focusPoint + offset;
 
