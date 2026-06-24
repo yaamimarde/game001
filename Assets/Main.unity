@@ -1010,11 +1010,18 @@ MonoBehaviour:
     m_Bits: 4294967295
   obstacleCheckDistance: 1.2
   attackStopRange: 0
+  simulateAttack: 1
+  logSimulatedAttack: 1
+  meleeAttackDuration: 0.1
+  meleeAttackCooldown: 1
   orbitDistance: 1.8
+  orbitAngularSpeed: 120
   chaseLostBuffer: 2
   idlePatrolRadius: 2
   idleMaxDistanceFromSpawn: 3
   idleRetargetInterval: 2
+  separationRadius: 1.5
+  separationStrength: 1.2
   preferredRange: 5
   minSafeRange: 3
   stuckCheckDuration: 0.5
@@ -1221,11 +1228,18 @@ MonoBehaviour:
     m_Bits: 1
   obstacleCheckDistance: 1.2
   attackStopRange: 0
+  simulateAttack: 1
+  logSimulatedAttack: 1
+  meleeAttackDuration: 0.1
+  meleeAttackCooldown: 1
   orbitDistance: 1.8
+  orbitAngularSpeed: 120
   chaseLostBuffer: 2
   idlePatrolRadius: 2
   idleMaxDistanceFromSpawn: 3
   idleRetargetInterval: 2
+  separationRadius: 1.5
+  separationStrength: 1.2
   preferredRange: 5
   minSafeRange: 3
   stuckCheckDuration: 0.5
