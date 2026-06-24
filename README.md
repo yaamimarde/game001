@@ -27,7 +27,7 @@ Assets/
 ├── Scenes/          # 场景文件（Main.unity 为示例场景）
 ├── Scripts/
 │   ├── Player/      # 玩家逻辑（PlayerMovement2D）
-│   └── Camera/      # 相机逻辑（CameraFollow2D）
+│   └── Cameras/     # 相机逻辑（CameraFollow2D）
 ├── Prefabs/         # 预制体（Player.prefab）
 └── Sprites/         # 精灵图资源
 ```
