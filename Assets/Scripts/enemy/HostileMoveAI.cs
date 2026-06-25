@@ -252,6 +252,8 @@ public class HostileMoveAI : MonoBehaviour
 
     Rigidbody2D rb;
     Character character;
+    // 记录怪物的真实面朝方向（假设默认面朝正下方或正右方，依你美术资源而定）
+    private Vector2 currentFacingDir = Vector2.down;
     private IAttackBehaviour externalAttackBehaviour;
     /// <summary>假装外部传入的攻击节奏（当前为内置模拟器实例）。</summary>
 
@@ -360,8 +362,17 @@ public class HostileMoveAI : MonoBehaviour
 
         if (moveDir.sqrMagnitude > 0.001f)
         {
-            transform.position += (Vector3)(moveDir.normalized * moveSpeed * Time.deltaTime);
-            facingDirection = moveDir.normalized;
+            Vector2 normalizedDir = moveDir.normalized;
+            currentFacingDir = normalizedDir;
+            facingDirection = normalizedDir;
+
+            // 直接给刚体赋予速度
+            rb.velocity = normalizedDir * moveSpeed;
+        }
+        else
+        {
+            // 必须要加上这一步！当没有移动输入时，要把刚体速度清零，否则怪停不下来，会由于惯性一直滑行
+            rb.velocity = Vector2.zero;
         }
     }
 
