@@ -73,3 +73,6 @@ InitTestScene*.unity*
 
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Plastic SCM (not used — project uses Git)
+/.plastic/
