@@ -7,11 +7,10 @@ public class Gebuling : Character
 {
     void Start()
     {
-        // 游戏开始时，直接给继承过来的属性赋值
-        characterName = "哥布灵";
+        characterName = "哥布林";
         hp = 100;
         damage = 10;
-        attack = "近战";
+        attackType = AttackType.Melee; // 类型安全赋值
         defense = 10;
     }
 }

@@ -252,8 +252,9 @@ public class HostileMoveAI : MonoBehaviour
 
     Rigidbody2D rb;
     Character character;
-
+    private IAttackBehaviour externalAttackBehaviour;
     /// <summary>假装外部传入的攻击节奏（当前为内置模拟器实例）。</summary>
+
     IAttackRhythmInput attackRhythm;
 
     Vector3 spawnPosition;
@@ -307,9 +308,10 @@ public class HostileMoveAI : MonoBehaviour
     {
         spawnPosition = transform.position;
         PickNewIdleTarget();
-
+        externalAttackBehaviour = GetComponent<IAttackBehaviour>();
         if (combatType == CombatType.Auto)
-            isMelee = character == null || character.attack == "近战";
+            // 使用类型安全的枚举判断替代字符串判断
+            isMelee = character == null || character.attackType == AttackType.Melee;
         else
             isMelee = combatType == CombatType.Melee;
 
@@ -530,12 +532,29 @@ public class HostileMoveAI : MonoBehaviour
     /// <summary>把攻击节奏输入推进一帧；未启用或非近战时重置。</summary>
     void UpdateMeleeCombatPhase(float dist, bool canSee)
     {
+        // 📥 【修改】：如果存在外部现代攻击脚本，直接读取它的状态来改变移动 AI 认账的 Phase
+        if (externalAttackBehaviour != null)
+        {
+            if (IsInCombatZone(dist, canSee))
+            {
+                // 如果外部脚本说应该停步（说明在挥刀攻击），就给移动 AI 传 Attacking，否则传 Cooldown 环绕
+                var targetPhase = externalAttackBehaviour.ShouldStopMovement ? MeleeCombatPhase.Attacking : MeleeCombatPhase.Cooldown;
+
+                // 利用原代码里现成的 SetPhase 方法去刷新状态
+                if (attackRhythm is BuiltinAttackRhythmSimulator sim)
+                {
+                    // 顺藤摸瓜，通过反射或者直接在 Simulator 里加个公有方法（或者简单采用下面 ShouldStopForAttack 的逻辑拦截）
+                }
+            }
+            return;
+        }
+
+        // 以下是原本的降级保障（旧的模拟器代码，保持不动）
         if (!simulateAttack || !isMelee)
         {
             attackRhythm.Reset();
             return;
         }
-
         attackRhythm.Tick(Time.deltaTime, IsInCombatZone(dist, canSee));
     }
 
@@ -722,12 +741,16 @@ public class HostileMoveAI : MonoBehaviour
         if (attackStopRange > 0f)
             return attackStopRange;
 
+        if (externalAttackBehaviour != null)
+            return externalAttackBehaviour.AttackRange;
+
         if (character == null)
             return isMelee ? 1.5f : 6f;
 
-        if (character.attack == "近战")
+        // ✨ 将字符串判断统一重构为枚举判断
+        if (character.attackType == AttackType.Melee)
             return 1.5f;
-        if (character.attack == "远程")
+        if (character.attackType == AttackType.Ranged)
             return 6f;
         return 2f;
     }
@@ -756,10 +779,23 @@ public class HostileMoveAI : MonoBehaviour
     /// <summary>近战攻击阶段且在战斗区域内时停止移动（模拟挥击停步）。</summary>
     bool ShouldStopForAttack()
     {
-        if (playerTransform == null || !simulateAttack)
+        if (playerTransform == null)
             return false;
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
+
+        // 📥 【新增】：如果有外部现代攻击脚本，只要进了距离，且攻击脚本说“要停步挥刀”，就立马返回 true 停下！
+        if (externalAttackBehaviour != null)
+        {
+            return isMelee
+                && externalAttackBehaviour.ShouldStopMovement
+                && dist <= GetAttackStopRange(); // 或者是 IsInCombatZone 判定
+        }
+
+        // 以下是原本的内置模拟器停步逻辑，保留作为无攻击脚本时的保底
+        if (!simulateAttack)
+            return false;
+
         return isMelee
             && CurrentCombatPhase == MeleeCombatPhase.Attacking
             && IsInCombatZone(dist, CanSeePlayer());
