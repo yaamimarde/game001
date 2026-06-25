@@ -255,7 +255,7 @@ public class HostileMoveAI : MonoBehaviour
     // 记录怪物的真实面朝方向（假设默认面朝正下方或正右方，依你美术资源而定）
     private Vector2 currentFacingDir = Vector2.down;
     private IAttackBehaviour externalAttackBehaviour;
-    /// <summary>假装外部传入的攻击节奏（当前为内置模拟器实例）。</summary>
+    MeleeCombatPhase externalCombatPhase = MeleeCombatPhase.Ready;
 
     IAttackRhythmInput attackRhythm;
 
@@ -285,7 +285,10 @@ public class HostileMoveAI : MonoBehaviour
     #region 对外只读属性
 
     /// <summary>当前近战战斗节奏阶段（来自攻击节奏输入）。</summary>
-    public MeleeCombatPhase CurrentCombatPhase => attackRhythm?.Phase ?? MeleeCombatPhase.Ready;
+    public MeleeCombatPhase CurrentCombatPhase =>
+        externalAttackBehaviour != null
+            ? externalCombatPhase
+            : attackRhythm?.Phase ?? MeleeCombatPhase.Ready;
 
     /// <summary>是否启用模拟攻击节奏。</summary>
     public bool IsSimulatingAttack => simulateAttack;
@@ -311,6 +314,9 @@ public class HostileMoveAI : MonoBehaviour
         spawnPosition = transform.position;
         PickNewIdleTarget();
         externalAttackBehaviour = GetComponent<IAttackBehaviour>();
+        if (externalAttackBehaviour != null)
+            simulateAttack = false;
+
         if (combatType == CombatType.Auto)
             // 使用类型安全的枚举判断替代字符串判断
             isMelee = character == null || character.attackType == AttackType.Melee;
@@ -342,8 +348,11 @@ public class HostileMoveAI : MonoBehaviour
 
     void Update()
     {
-        attackRhythm.SyncTiming(meleeAttackDuration, meleeAttackCooldown);
-        attackRhythm.SetLogging(logSimulatedAttack);
+        if (externalAttackBehaviour == null)
+        {
+            attackRhythm.SyncTiming(meleeAttackDuration, meleeAttackCooldown);
+            attackRhythm.SetLogging(logSimulatedAttack);
+        }
 
         UpdateFacingDirection();
         UpdateStateMachine();
@@ -543,20 +552,13 @@ public class HostileMoveAI : MonoBehaviour
     /// <summary>把攻击节奏输入推进一帧；未启用或非近战时重置。</summary>
     void UpdateMeleeCombatPhase(float dist, bool canSee)
     {
-        // 📥 【修改】：如果存在外部现代攻击脚本，直接读取它的状态来改变移动 AI 认账的 Phase
         if (externalAttackBehaviour != null)
         {
-            if (IsInCombatZone(dist, canSee))
-            {
-                // 如果外部脚本说应该停步（说明在挥刀攻击），就给移动 AI 传 Attacking，否则传 Cooldown 环绕
-                var targetPhase = externalAttackBehaviour.ShouldStopMovement ? MeleeCombatPhase.Attacking : MeleeCombatPhase.Cooldown;
-
-                // 利用原代码里现成的 SetPhase 方法去刷新状态
-                if (attackRhythm is BuiltinAttackRhythmSimulator sim)
-                {
-                    // 顺藤摸瓜，通过反射或者直接在 Simulator 里加个公有方法（或者简单采用下面 ShouldStopForAttack 的逻辑拦截）
-                }
-            }
+            externalCombatPhase = IsInCombatZone(dist, canSee)
+                ? (externalAttackBehaviour.ShouldStopMovement
+                    ? MeleeCombatPhase.Attacking
+                    : MeleeCombatPhase.Cooldown)
+                : MeleeCombatPhase.Ready;
             return;
         }
 

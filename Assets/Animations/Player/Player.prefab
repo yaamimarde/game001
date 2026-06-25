@@ -16,6 +16,11 @@ GameObject:
   - component: {fileID: 4433895542442286732}
   - component: {fileID: 4097999280050219595}
   - component: {fileID: 7935360929276174926}
+  - component: {fileID: 8800000000000000001}
+  - component: {fileID: 8800000000000000002}
+  - component: {fileID: 8800000000000000003}
+  - component: {fileID: 8800000000000000004}
+  - component: {fileID: 8800000000000000005}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -33,7 +38,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 16.39, y: -5.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,12 +84,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1506185461, guid: fbfe29741b8451a46af7b2e524798b13, type: 3}
+  m_Sprite: {fileID: 9128384846270689552, guid: 47c23f8d2acf47f495ce98fa523ad5eb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.48, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -153,8 +158,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 0.48, y: 0.64}
+    newSize: {x: 0.48, y: 0.64}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -179,6 +184,9 @@ MonoBehaviour:
   dashDistance: 3
   dashDuration: 0.2
   dashCooldown: 0.5
+  jumpSpeed: 8
+  jumpDuration: 0.4
+  jumpCooldown: 0.3
   cameraTransform: {fileID: 0}
 --- !u!114 &4433895542442286732
 MonoBehaviour:
@@ -223,5 +231,80 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1b2c3d4e5f6789012345678abcdef01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8800000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620498623008197603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c5d6e7f8a9012345678901abcdef05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8800000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620498623008197603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d8e9f0a1b2345678901234abcdef06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8800000000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620498623008197603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e915a6892bf4f14582d2987d03ca987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: 
+  hp: 0
+  maxHp: 100
+  damage: 0
+  attackType: 0
+  defense: 0
+  useGameSessionStats: 1
+--- !u!114 &8800000000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620498623008197603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90f3f46bec52fd044a7c29581b814fc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackCooldown: 0.5
+  comboResetDuration: 1.5
+  attackPoint: {fileID: 0}
+  attackRange: 1.2
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  useAnimationHitEvent: 1
+--- !u!114 &8800000000000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620498623008197603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c7e9f1b2d4567890abcdef12345678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

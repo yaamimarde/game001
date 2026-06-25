@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2edbfb52ee3c10f4fbe7cd5dc7f75b20, type: 3}
+  m_Name: guard_recruit
+  m_EditorClassIdentifier: 
+  templateId: guard_recruit
+  displayName: "\u6D41\u6D6A\u536B\u5175"
+  prefab: {fileID: 1558945910360998242, guid: ccbba5befa779c647b6657eddfc39b67, type: 3}
+  hireCost: 200
+  dailyWage: 20
+  requiredWorldFlag: 
+  baseStats:
+    strength: 1
+    dexterity: 1
+    toughness: 1
+    athletics: 1
+    melee: 1
+    ranged: 1
+    strengthXp: 0
+    dexterityXp: 0
+    toughnessXp: 0
+    athleticsXp: 0
+    meleeXp: 0
+    rangedXp: 0
+    maxHp: 100
+    currentHp: 100
+    baseDamage: 10
+    baseDefense: 5

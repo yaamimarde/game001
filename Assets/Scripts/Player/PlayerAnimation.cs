@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 根据 PlayerMovement2D 状态驱动 Animator 参数；提供 Animation Event 回调。
-/// 水平左走/左跑复用右向序列帧，通过 SpriteRenderer.flipX 镜像。
-/// </summary>
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(SpriteRenderer))]
 [DefaultExecutionOrder(101)]
@@ -12,18 +8,20 @@ public class PlayerAnimation : MonoBehaviour
     static readonly int SpeedHash = Animator.StringToHash("Speed");
     static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
     static readonly int IsDashingHash = Animator.StringToHash("IsDashing");
+    static readonly int IsJumpingHash = Animator.StringToHash("IsJumping");
     static readonly int MoveXHash = Animator.StringToHash("MoveX");
     static readonly int MoveYHash = Animator.StringToHash("MoveY");
 
     Animator animator;
     PlayerMovement2D movement;
-    SpriteRenderer spriteRenderer;
+    PlayerComboAttack comboAttack;
+    Vector2? facingOverride;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
         movement = GetComponent<PlayerMovement2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        comboAttack = GetComponent<PlayerComboAttack>();
     }
 
     void Update()
@@ -34,37 +32,30 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetFloat(SpeedHash, movement.CurrentSpeed);
         animator.SetBool(IsRunningHash, movement.IsRunning);
         animator.SetBool(IsDashingHash, movement.IsDashing);
+        animator.SetBool(IsJumpingHash, movement.IsJumping);
 
-        Vector2 facing = movement.FacingInput;
-        float animMoveX = facing.x != 0f ? Mathf.Abs(facing.x) : 0f;
-        animator.SetFloat(MoveXHash, animMoveX);
+        Vector2 facing = facingOverride ?? movement.FacingInput;
+        animator.SetFloat(MoveXHash, facing.x);
         animator.SetFloat(MoveYHash, facing.y);
     }
 
-    void LateUpdate()
+    public void LockFacingForAttack()
     {
-        if (spriteRenderer == null || movement == null)
-            return;
-
-        Vector2 facing = movement.FacingInput;
-        if (facing.x < 0f)
-            spriteRenderer.flipX = true;
-        else if (facing.x > 0f)
-            spriteRenderer.flipX = false;
+        if (movement != null)
+            facingOverride = movement.FacingInput;
     }
 
-    public void OnFootstep()
+    public void ClearFacingOverride()
     {
-        Debug.Log("Footstep");
+        facingOverride = null;
     }
 
-    public void OnDashImpact()
-    {
-        Debug.Log("Dash impact");
-    }
+    public void OnFootstep() { }
+
+    public void OnDashImpact() { }
 
     public void OnAttackHit()
     {
-        Debug.Log("Attack hit");
+        comboAttack?.ApplyHitDamage();
     }
 }
