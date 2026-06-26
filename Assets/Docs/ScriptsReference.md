@@ -225,7 +225,7 @@ Kenshi 式练级：`RegisterMeleeHit`、`RegisterDamageTaken`、`RegisterDistanc
 Animator 参数驱动，攻击朝向锁定。
 
 ### `FacingCamera.cs`（已有）
-Billboard，精灵始终面向相机。
+Billboard，精灵始终面向相机。挂载与详情见 **Cameras** 节。
 
 ### `PlayerAttackBase.cs` / `PlayerComboAttack.cs`（已有）
 三连击近战；命中时调用 `StatProgressionSystem.RegisterMeleeHit()`。
@@ -290,7 +290,20 @@ HP 条、金币、属性摘要、Game Over 面板。
 ## Cameras — 相机
 
 ### `CameraFollow2D.cs`（已有）
-2.5D 跟随相机，Q/E 步进旋转，旋转期间禁止玩家移动。
+**挂载**：Main Camera（`Main.unity` / `HouseInterior.unity` / `Assets/Main.unity` / `001.unity`）
+
+**功能**：2.5D 透视跟随，Q/E 步进旋转 45°
+
+**关联**：`PlayerMovement2D` 读取 `IsRotating`，旋转期间禁止玩家移动
+
+**源码**：`Assets/Scripts/Camera/CameraFollow2D.cs`
+
+### `FacingCamera.cs`（已有）
+**挂载**：`Player.prefab`、`Slime.prefab`、`Tree.prefab` 的 Sprite 子对象
+
+**功能**：Billboard，精灵始终面向主相机
+
+**源码**：`Assets/Scripts/Player/FacingCamera.cs`
 
 ---
 

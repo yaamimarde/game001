@@ -27,7 +27,7 @@ public class PlayerComboAttack : PlayerAttackBase
     {
         base.Start();
         movement = GetComponent<PlayerMovement2D>();
-        playerAnimation = GetComponent<PlayerAnimation>();
+        playerAnimation = GetComponentInChildren<PlayerAnimation>();
         input = GetComponent<PlayerInputReader>();
     }
 

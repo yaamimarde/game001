@@ -18,7 +18,8 @@ Unity 2022.3 LTS 俯视 2D 游戏项目模板。
 ## 操作说明
 
 - **WASD** 或 **方向键**：四向移动玩家
-- 相机平滑跟随玩家
+- **Q / E**：相机步进旋转 45°
+- 透视相机平滑跟随玩家
 
 ## 项目结构
 
@@ -27,7 +28,7 @@ Assets/
 ├── Scenes/          # 场景文件（Main.unity 为示例场景）
 ├── Scripts/
 │   ├── Player/      # 玩家逻辑（PlayerMovement2D）
-│   └── Cameras/     # 相机逻辑（CameraFollow2D）
+│   └── Camera/      # 相机逻辑（CameraFollow2D）
 ├── Prefabs/         # 预制体（Player.prefab）
 └── Sprites/         # 精灵图资源
 ```
@@ -37,7 +38,8 @@ Assets/
 | 脚本 | 说明 |
 |------|------|
 | `PlayerMovement2D` | 俯视四向移动，基于 Rigidbody2D，无重力 |
-| `CameraFollow2D` | 正交相机平滑跟随目标 |
+| `CameraFollow2D` | 2.5D 透视相机平滑跟随目标，Q/E 步进旋转 |
+| `FacingCamera` | Billboard，精灵始终面向主相机 |
 
 ## 注意事项
 

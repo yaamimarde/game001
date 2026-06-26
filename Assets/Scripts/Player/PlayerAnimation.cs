@@ -20,8 +20,8 @@ public class PlayerAnimation : MonoBehaviour
     void Awake()
     {
         animator = GetComponent<Animator>();
-        movement = GetComponent<PlayerMovement2D>();
-        comboAttack = GetComponent<PlayerComboAttack>();
+        movement = GetComponentInParent<PlayerMovement2D>();
+        comboAttack = GetComponentInParent<PlayerComboAttack>();
     }
 
     void Update()

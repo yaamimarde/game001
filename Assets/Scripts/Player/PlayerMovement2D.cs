@@ -15,6 +15,7 @@ public class PlayerMovement2D : MonoBehaviour
     [SerializeField] Transform cameraTransform;
 
     Rigidbody2D rb;
+    // 自动从 cameraTransform 获取；Main Camera 上的 CameraFollow2D，用于旋转期间锁定移动
     CameraFollow2D cameraFollow;
     PlayerInputReader input;
     Vector2 movement;
@@ -46,6 +47,9 @@ public class PlayerMovement2D : MonoBehaviour
 
         if (cameraTransform != null)
             cameraFollow = cameraTransform.GetComponent<CameraFollow2D>();
+
+        if (rb != null)
+            rb.velocity = Vector2.zero;
     }
 
     void Update()
